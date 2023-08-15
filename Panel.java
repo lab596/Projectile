@@ -136,6 +136,10 @@ public class Panel extends JPanel implements MouseListener, ActionListener, Chan
     //* For moving launcher left and right
     static Action leftAction;
     static Action rightAction;
+    static Action dropAction;
+
+    static boolean ability1 = false;
+
 
         //*************************************************************************************************************************************MAIN METHOD************************************************************************************************//
     //*Main method that is used to run the program
@@ -197,6 +201,11 @@ public class Panel extends JPanel implements MouseListener, ActionListener, Chan
       
         slider.getInputMap().put(KeyStroke.getKeyStroke('d'), "rightAction");
         slider.getActionMap().put("rightAction", rightAction);
+
+        //*Key bindings for actions
+        dropAction = p.new DropAction();
+        p.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "drop");
+        p.getActionMap().put("drop", dropAction);
         
         //* Adding wind to north of screeen
         p.add(wind, BorderLayout.NORTH);
@@ -277,7 +286,12 @@ public class Panel extends JPanel implements MouseListener, ActionListener, Chan
         
         //*Makes sure to check that launcher is at end of its animation
         if(shoot == true && pangle == 61){
-            //*This draws multiple (in this case 3) iterations of the arraylists for everytime that action performed is called - this speeds up the shot 
+            if(ability1 == true){
+                for(int o = j; o<xcoords.size(); o++){
+                    xcoords.set(o, xcoords.get(j));
+                }
+            }
+            //*This draws multiple (in this case 4) iterations of the arraylists for everytime that action performed is called - this speeds up the shot 
             for(int y =0; y<4; y++){
                 //*This if statement is required to bypass the initial value of "j" which resulted in an index out of bounds error
                 if(xcoords.size()>0){
@@ -290,6 +304,7 @@ public class Panel extends JPanel implements MouseListener, ActionListener, Chan
                     projy = ycoords.get(j);
                     //*This clears all required variables and things at the end of a shoot (determined when at the end of an arraylist) to prepare for the next shoot
                     if(j==xcoords.size()-1){
+                        ability1 = false;
                         shoot = false;
                         xcoords.clear();
                         ycoords.clear();
@@ -809,6 +824,17 @@ public class Panel extends JPanel implements MouseListener, ActionListener, Chan
         @Override
         public void actionPerformed(ActionEvent e) {
             moveRight = true;
+        }
+        
+    }
+
+    public class DropAction extends AbstractAction{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(ability1 == false){
+                ability1 = true;
+            }
         }
         
     }
